@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, Animated, Easing, TouchableOpacity } from 'react-native';
 import { getPokemonAbility } from './api';
 
 const App = () => {
@@ -27,6 +27,22 @@ const App = () => {
         fetchAbilities();
     }, []);
 
+    const spinValue = useRef(new Animated.Value(0)).current;
+
+    const startSpinAnimation = () => {
+        Animated.timing(spinValue, {
+            toValue: 1,
+            duration: 1000,
+            easing: Easing.linear,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const spin = spinValue.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg'],
+    });
+
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
@@ -36,29 +52,39 @@ const App = () => {
                 ) : (
                     <View style={styles.abilityContainer}>
                         {abilities.map((ability) => (
-                            <View
-                                style={[styles.abilityItem, { backgroundColor: getRandomColor() }]}
+                            <TouchableOpacity
                                 key={ability.id}
+                                onPress={() => {
+                                    startSpinAnimation();
+                                }}
                             >
-                                <Text style={styles.abilityId}>#{ability.id}</Text>
-                                {ability.sprites && ability.sprites.front_default && (
-                                    <Image
-                                        source={{ uri: ability.sprites.front_default }}
-                                        style={styles.abilityImage}
-                                    />
-                                )}
-                                <Text style={styles.abilityName}>{ability.name}</Text>
-                                <Text style={styles.abilityDescription}>{ability.effect_entries[0].effect}</Text>
-                                <Text style={styles.abilityDetails}>Generation: {ability.generation.name}</Text>
-                                <Text style={styles.abilityDetails}>Pokemon Count: {ability.pokemon.length}</Text>
-                            </View>
+                                <Animated.View
+                                    style={[
+                                        styles.abilityItem,
+                                        { backgroundColor: getRandomColor(), transform: [{ rotate: spin }] },
+                                    ]}
+                                >
+                                    <Text style={styles.abilityId}>#{ability.id}</Text>
+                                    {ability.sprites && ability.sprites.front_default && (
+                                        <Image
+                                            source={{ uri: ability.sprites.front_default }}
+                                            style={styles.abilityImage}
+                                        />
+                                    )}
+                                    <Text style={styles.abilityName}>{ability.name}</Text>
+                                    <Text style={styles.abilityDescription}>{ability.effect_entries[0].effect}</Text>
+                                    <Text style={styles.abilityDetails}>Generation: {ability.generation.name}</Text>
+                                    <Text style={styles.abilityDetails}>Pokemon Count: {ability.pokemon.length}</Text>
+                                </Animated.View>
+                            </TouchableOpacity>
                         ))}
                     </View>
                 )}
             </View>
         </ScrollView>
     );
-};
+}
+
 
 const getRandomColor = () => {
     const colors = ['#FF595E', '#FFCA3A', '#8AC926', '#1982C4', '#6A4C93'];
