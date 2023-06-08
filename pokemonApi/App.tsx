@@ -31,7 +31,7 @@ const App = () => {
 
     const startSpinAnimation = () => {
         Animated.timing(spinValue, {
-            toValue: 1,
+            toValue: 2,
             duration: 1000,
             easing: Easing.linear,
             useNativeDriver: true,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
         width: 350,
-        height: 620,
+        height: 680,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
@@ -134,11 +134,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
-        textAlign: 'center',
+        textAlign: 'center',  
     },
     abilityImage: {
         width: 120,
-        height: 120,
+        height: 120,   
         marginBottom: 10,
     },
     abilityName: {
